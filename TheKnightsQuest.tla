@@ -1,6 +1,6 @@
 -------------------------- MODULE TheKnightsQuest --------------------------- 
 (***************************************************************************)
-EXTENDS Naturals, FiniteSets, TLC, Functions
+EXTENDS Naturals, FiniteSets, TLC
 
 (* As a constant we get the size of the border                             *)
 CONSTANT N
@@ -27,20 +27,29 @@ Jumps(pair) == LET x == pair[1]
 
 Init == \E x \in Possible     : \E y \in Possible : /\ occupied = {<<x,y>>}
                                                     /\ current  = <<x,y>>
+(* 
+    -> Before I had \E, I've used CHOOSE to select an arbitrary value from S.
+    However, as I was having stalling issues, which is the CHOOSE was always returning the same value, to
+    an arbitray input i.
 
+    That is because CHOOSE is a function that returns an arbitrary value fulfilling the specified criteria. 
+    But because it's a function it always returns the same value for the same expression. 
+
+    See more at https://stackoverflow.com/questions/75684906/tla-spec-stalls-as-choose-does-not-select-a-previous-selected-value
+*)
 Next == LET S == Jumps(current) 
-            Chosen == CHOOSE s \in S: TRUE
-        IN
+        IN \E Chosen \in S:
             /\ current'  = Chosen
             /\ occupied' = occupied \cup {Chosen}
-
+(* However, this take a lot of time to perform, as N could be large. *)
 
 Spec      == Init /\ [][Next]_vars
 FairSpec  == Spec /\ WF_occupied(Next)
-NotSolved == Cardinality(occupied) < 8
+NotSolved == Cardinality(occupied) < (N-1)^2
 
 (*
-    Slice == {{<< xt[n], yt[n] >>:  n \in Dom}:
-              << xt, yt >> \in [Dom -> X] \X Bijection(Dom, Y)}
+    Nevertheless, the current description does allow for a path where the same element of S is chosen over and over again. 
+    You can prevent that by adding /\ ~(Chosen \in occupied) as a conjunct. 
+    But that also means at some point you will have exhausted S and your algorithm will stall which you need to take into account.
 *)
 =============================================================================
