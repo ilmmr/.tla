@@ -4,7 +4,7 @@
 (* problem in concurrency.                                                *)
 (* https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem          *)
 (**************************************************************************)
-EXTENDS FiniteSets, Naturals, Sequences
+EXTENDS FiniteSets, Naturals, Sequences, TLC
 
 CONSTANT NumActors
 
@@ -16,13 +16,10 @@ vars == <<readers, writers, waiting>>
 
 Actors == 1..NumActors
 
-ToSet(s) == { s[i] : i \in DOMAIN s }
-
-read(s)  == s[1] = "read"
-write(s) == s[1] = "write"
-
-WaitingToRead  == { p[2] : p \in ToSet(SelectSeq(waiting, read )) }
-WaitingToWrite == { p[2] : p \in ToSet(SelectSeq(waiting, write)) }
+(* Manipulate waiting queue *)
+ToSet(s)       == { s[i] : i \in DOMAIN s }
+WaitingToRead  == { p[2] : p \in ToSet(SelectSeq(waiting, LAMBDA s : s[1] = "read" )) }
+WaitingToWrite == { p[2] : p \in ToSet(SelectSeq(waiting, LAMBDA s : s[1] = "write")) }
 
 (* Actions *)
 TryRead(actor) ==
@@ -35,24 +32,31 @@ TryWrite(actor) ==
     /\ waiting' = Append(waiting, <<"write", actor>>)
     /\ UNCHANGED <<readers, writers>>
 
+(* The following actions are executed upon: 
+    -> An element in a queue is read;
+    which means, that the waiting' will be set as 
+    the tail of the current waiting list.
+*)
 Read(actor) ==
-    /\ readers' = readers \union {actor}
+    /\ readers' = readers \cup {actor}
     /\ waiting' = Tail(waiting)
     /\ UNCHANGED writers
 
 Write(actor) ==
+    (* can only write when there are no readers *)
     /\ readers = {}
-    /\ writers' = writers \union {actor}
+    /\ writers' = writers \cup {actor}
     /\ waiting' = Tail(waiting)
     /\ UNCHANGED readers
 
 ReadOrWrite ==
     /\ waiting /= <<>>
     /\ writers = {}
-    /\ LET pair  == Head(waiting)
-           actor == pair[2]
-       IN CASE pair[1] = "read" -> Read(actor)
-            [] pair[1] = "write" -> Write(actor)
+    /\ LET pair   == Head(waiting)
+           action == pair[1]
+           actor  == pair[2]
+       IN CASE action = "read"  -> Read(actor)
+            [] action = "write" -> Write(actor)
 
 StopActivity(actor) ==
     IF actor \in readers
@@ -90,7 +94,6 @@ TypeOK ==
     /\ waiting \in Seq({"read", "write"} \times Actors)
 
 Safety ==
-    /\ ~(readers /= {} /\ writers /= {})
     /\ Cardinality(writers) <= 1
 
 (* Properties *)
@@ -99,5 +102,11 @@ Liveness ==
     /\ \A actor \in Actors : []<>(actor \in writers)
     /\ \A actor \in Actors : []<>(actor \notin readers)
     /\ \A actor \in Actors : []<>(actor \notin writers)
-
+(* 
+    PUT this into the .cfg file:
+    CONSTANTS NumActors = 2
+    SPECIFICATION Spec
+    INVARIANTS TypeOK Safety
+    PROPERTIES Liveness
+*)
 ============================================================================

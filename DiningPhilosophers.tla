@@ -70,11 +70,12 @@ FairSpec  == Spec /\ WF_hasEaten(Next)
     It checks wheter it can find a trace such:
         -> every philo is done eating.
 *)
-NotSolved   == ~(hasEaten = 1..N)
+NotSolved   == hasEaten # 1..N
 ForksinHand == \A a,b \in DOMAIN inHand : inHand[a] = inHand[b] /\ ~(inHand[a] = {})=> a = b (* the same as being injective *)
-WillEat     == \A p   \in 1..N          : []<>(p \in hasEaten) 
 (* Properties *)
+WillEat     == \A p   \in 1..N          : []<>(p \in hasEaten) 
 (* 
+    PUT this into the .cfg file:
     CONSTANTS N = 5
     SPECIFICATION FairSpec
     INVARIANT NotSolved ForksinHand
