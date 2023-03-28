@@ -75,10 +75,10 @@ ForksinHand == \A a,b \in DOMAIN inHand : inHand[a] = inHand[b] /\ ~(inHand[a] =
 (* Properties *)
 WillEat     == \A p   \in 1..N          : []<>(p \in hasEaten) 
 (* 
-    PUT this into the .cfg file:
-    CONSTANTS N = 5
-    SPECIFICATION FairSpec
-    INVARIANT NotSolved ForksinHand
-    PROPERTIES WillEat
+    DiningPhilosophers.cfg FILE :
+        CONSTANTS N = 5
+        SPECIFICATION FairSpec
+        INVARIANT NotSolved ForksinHand
+        PROPERTIES WillEat
 *)
 =============================================================================

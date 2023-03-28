@@ -77,9 +77,9 @@ FairSpec  == Spec /\ WF_vars(Next)
 NotSolved == (doneSmoking # INGREDIENTS)
 
 (* 
-    PUT this into the .cfg file:
-    CONSTANT INGREDIENTS = {"tobacco", "paper", "matches"}
-    SPECIFICATION FairSpec
-    INVARIANT NotSolved
+    CigaretteSmokers.cfg FILE :
+        CONSTANT INGREDIENTS = {"tobacco", "paper", "matches"}
+        SPECIFICATION FairSpec
+        INVARIANT NotSolved
 *)
 =============================================================================
