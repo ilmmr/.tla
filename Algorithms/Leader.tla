@@ -3,8 +3,9 @@ EXTENDS TLC
 LOCAL INSTANCE Naturals
 LOCAL INSTANCE FiniteSets
 
-\* @type: Nat;
-CONSTANT NumberOfNodes
+CONSTANT
+    \* @type: Nat; 
+    NumberOfNodes
 
 \* @type: Set(Nat);
 Nodes == 1..NumberOfNodes

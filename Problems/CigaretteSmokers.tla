@@ -6,13 +6,9 @@
 (***************************************************************************)
 EXTENDS Integers, FiniteSets, TLC
 
-\* @type: Set(Str);
-CONSTANT INGREDIENTS
-(* INGREDIENTS == {"tobacco", "paper", "matches"} => put this on .cfg file *)
-(*  SMOKERS     == {"Juan", "Paulo", "Adrian"} 
-    This ref is not necessary as each i of INGREDIENTS represents a different
-    smoker s.
-*)
+CONSTANT
+    \* @type: Set(Str); 
+    INGREDIENTS
 
 (* The TABLE defines every possible combination of 2 ingredients on the table *)
 \* @type: Set(Str);

@@ -8,8 +8,9 @@
 EXTENDS Naturals, TLC, FiniteSets, Functions
 
 (* N is the number of philosophers, which needs to be greater (>) than 0.  *)
-\* @type: Nat;
-CONSTANTS N
+CONSTANTS
+        \* @type: Nat; 
+        N
 ASSUME N \in Nat \ {0}
 
 VARIABLE    

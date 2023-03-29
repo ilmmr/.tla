@@ -15,6 +15,9 @@
 LOCAL INSTANCE Naturals
 LOCAL INSTANCE FiniteSets
 
+CONSTANT
+        \* @type: Nat; 
+        NumberOfBeans
 ----------------------------------------------------------------------
 
 

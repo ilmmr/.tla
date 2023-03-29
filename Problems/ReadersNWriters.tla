@@ -6,8 +6,9 @@
 (**************************************************************************)
 EXTENDS FiniteSets, Naturals, Sequences, TLC
 
-\* @type: Nat;
-CONSTANT NumActors
+CONSTANT 
+    \* @type: Nat;
+    NumActors
 
 VARIABLES
     \* @type: Set(Nat);

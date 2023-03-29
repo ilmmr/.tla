@@ -1,11 +1,17 @@
 ---------------------------- MODULE TwoPhaseCommit -------------------------- 
-CONSTANT Participant
+CONSTANT
+    \* @type: Set(Nat); 
+    Participant
 
 VARIABLES
-  pState,    (* the state of each participant *)
-  mState,    (* the state of the manager *)
-  pPrepared, (* which participants are prepared *)
-  msgs       (* the set of messages interchaged *)
+    \* @type: Nat -> Str;
+    pState,    (* the state of each participant *)
+    \* @type: Str;
+    mState,    (* the state of the manager *)
+    \* @type: Set(Nat);
+    pPrepared, (* which participants are prepared *)
+    \* @type: Set({type: Set(Str), participant?: Set(Nat)});
+    msgs       (* the set of messages interchaged *)
 
 vars    == << pState, mState, pPrepared, msgs >> 
 Message == [type : {"Prepared"}, participant : Participant]  \cup  [type : {"Commit", "Abort"}]

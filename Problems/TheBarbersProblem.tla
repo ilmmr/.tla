@@ -16,8 +16,9 @@ LOCAL INSTANCE Naturals
 LOCAL INSTANCE FiniteSets
 LOCAL INSTANCE Functions
 
-\* @type: Nat;
-CONSTANT NumberOfChairs
+CONSTANT
+    \* @type: Nat; 
+    NumberOfChairs
 
 VARIABLES   
             \* @type: Bool;

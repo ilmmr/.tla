@@ -3,8 +3,9 @@
 EXTENDS Naturals, FiniteSets, TLC
 
 (* As a constant we get the size of the border                             *)
-\* @type: Nat;
-CONSTANT N
+CONSTANT 
+    \* @type: Nat;
+    N
 
 (* As a variable, we define which positions have occupied yet.             *)
 (* And the current position of the knight                                  *)

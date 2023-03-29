@@ -1,6 +1,7 @@
 --------------------------- MODULE TransitionCommit -------------------------
-\* @type: Set(Nat);
-CONSTANT Participant
+CONSTANT
+    \* @type: Set(Nat); 
+    Participant
 VARIABLE
         \* @type: Nat -> Str; 
         pState
