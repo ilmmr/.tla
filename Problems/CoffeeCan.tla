@@ -18,6 +18,12 @@ LOCAL INSTANCE FiniteSets
 CONSTANT
         \* @type: Nat; 
         NumberOfBeans
+
+ASSUME NumberOfBeans \in Nat \ {0}
+
+VARIABLES 
+    \* @type: Seq(Nat); 
+    can
 ----------------------------------------------------------------------
 
 
