@@ -6,26 +6,20 @@
 (***************************************************************************)
 EXTENDS Naturals
 
-(* We now declare two constant parameters.                                 *)
-CONSTANT Jug,      \* The set of all jugs.
-         Capacity, \* A function, where Capacity[j] is the capacity of jug j.
-         Goal      \* The quantity of water our heros must measure.
+CONSTANT 
+         \* @type: Set(Str);
+         Jug,
+         \* @type: Str -> Nat;
+         Capacity,
+         \* @type: Nat;
+         Goal
 
-
-(* Change these values *)
-mGoal == 4
-mJug  == {"j3", "j5"}
-mCapacity == [jug \in Jug |-> CASE jug="j3" -> 3
-                              []   jug="j5" -> 5]
-(* We make an assumption about these constants--namely, that Capacity is a *)
-(* function from jugs to positive integers, and Goal is a natural number.  *)
 ASSUME /\ Capacity \in [Jug -> (Nat \ {0})]
        /\ Goal \in Nat
------------------------------------------------------------------------------
-VARIABLE contents \* contents[j] is the amount of water in jug j
-TypeOK == contents \in [Jug -> Nat]
-Init   == contents   = [j \in Jug |-> 0]
------------------------------------------------------------------------------
+
+VARIABLE
+        \* @type: Str -> Nat; 
+        contents
 
 fill(j)  == contents' = [contents EXCEPT ![j] = Capacity[j]]
 empty(j) == contents' = [contents EXCEPT ![j] = 0]
@@ -37,20 +31,15 @@ jug2jug(j, k) ==
   IN  contents' = [contents EXCEPT ![j] = @ - waterTransfered,
                                    ![k] = @ + waterTransfered]
 
-(***************************************************************************)
-(* As usual, the next-state relation Next is the disjunction of all        *)
-(* possible actions, where existential quantification is a general form of *)
-(* disjunction.                                                            *)
-(***************************************************************************)
+-----------------------------------------------------------------------------
 JugS == \E j \in Jug : \E k \in Jug \ {j} : jug2jug(j,k)
+
 Next ==  \E j \in Jug : \/ fill(j)
                         \/ empty(j)
                         \/ JugS
-(***************************************************************************)
-(* We define the formula Spec to be the complete specification, asserting  *)
-(* of a behavior that it begins in a state satisfying Init, and that every *)
-(* step either satisfies Next or else leaves contents unchanged.           *)
-(***************************************************************************)
+
+Init   == contents   = [j \in Jug |-> 0]
+
 Spec == Init /\ [][Next]_contents
 -----------------------------------------------------------------------------
 (***************************************************************************)
@@ -78,7 +67,9 @@ Success   == <>(\E j \in Jug : contents[j] = Goal)
 (* In such cases its better to verify using an Invariance, since TLA+ is   *)
 (* unable to return satisfying instances: per say, return me an instance   *)
 (* where the goal is achieved                                              *)
-FairSpec  == Spec /\ WF_contents(Next)
+FairSpec      == Spec /\ WF_contents(Next)
+TypeInvariant == contents \in [Jug -> Nat]
 THEOREM FairSpec => Success
+THEOREM FairSpec => []TypeInvariant
 (***************************************************************************)
 =============================================================================

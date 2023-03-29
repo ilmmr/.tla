@@ -5,13 +5,22 @@
 (* https://en.wikipedia.org/wiki/Dining_philosophers_problem               *)
 (***************************************************************************)
 
-EXTENDS Naturals, TLC, FiniteSets
+EXTENDS Naturals, TLC, FiniteSets, Functions
 
 (* N is the number of philosophers, which needs to be greater (>) than 0.  *)
+\* @type: Nat;
 CONSTANTS N
 ASSUME N \in Nat \ {0}
 
-VARIABLE   inHand, hasEaten, table, waiter
+VARIABLE    
+            \* @type: Nat -> Set(Nat);
+            inHand, 
+            \* @type: Nat -> Nat;
+            hasEaten, 
+            \* @type: Set(Nat);
+            table, 
+            \* @type: Nat -> Nat;
+            waiter
 vars == << inHand, hasEaten, table, waiter >>
 (* The idea is to check if the neighours of some philosopher are thinking. *)
 (* inHand tracks which philospher holds the fork.                          *)
@@ -21,23 +30,6 @@ vars == << inHand, hasEaten, table, waiter >>
    For that I've used a waiter, which works as a mutex, if a waiter picks up
    a fork, it has to pick up the other one. 
 *)
-
-(* Range of a function. *)
-Range(f) == { f[x] : x \in DOMAIN f }
-
-TypeOK ==  /\ hasEaten \subseteq 1..N
-           /\ table    \subseteq 1..N
-           /\ inHand \in [1..N -> SUBSET 1..N]
-           /\ waiter \in [1..N -> Nat]
-           /\ \A p \in DOMAIN inHand : 
-                /\ Cardinality(inHand[p]) \leq 2
-                /\  CASE p = N -> inHand[p] \in SUBSET {N,1} 
-                    [] OTHER   -> inHand[p] \in SUBSET {p,p+1}
- 
-Init == /\ hasEaten = {}
-        /\ inHand   = [p \in 1..N |-> {}]
-        /\ waiter   = [p \in 1..N |-> 0 ]
-        /\ table    = 1..N
 
 PickUp      == \E f \in table : \E p \in DOMAIN inHand :
                     (* pre-conditions *)
@@ -58,6 +50,12 @@ Eats        == \E p \in DOMAIN inHand :
                     /\ inHand'   = [inHand EXCEPT ![p] = {}]
                     /\ table'    = table \cup inHand[p]
 
+----------------------------------------------------------------
+Init == /\ hasEaten = {}
+        /\ inHand   = [p \in 1..N |-> {}]
+        /\ waiter   = [p \in 1..N |-> 0 ]
+        /\ table    = 1..N
+
 Next        == \/ PickUp
                \/ Eats
 
@@ -70,10 +68,20 @@ FairSpec  == Spec /\ WF_hasEaten(Next)
     It checks wheter it can find a trace such:
         -> every philo is done eating.
 *)
-NotSolved   == hasEaten # 1..N
-ForksinHand == \A a,b \in DOMAIN inHand : inHand[a] = inHand[b] /\ ~(inHand[a] = {})=> a = b (* the same as being injective *)
+NotSolved     == hasEaten # 1..N
+ForksinHand   == \A a,b \in DOMAIN inHand : inHand[a] = inHand[b] /\ ~(inHand[a] = {})=> a = b (* the same as being injective *)
 (* Properties *)
-WillEat     == \A p   \in 1..N          : []<>(p \in hasEaten) 
+WillEat       == \A p   \in 1..N          : []<>(p \in hasEaten)
+TypeInvariant ==  /\ hasEaten \subseteq 1..N
+           /\ table    \subseteq 1..N
+           /\ inHand \in [1..N -> SUBSET 1..N]
+           /\ waiter \in [1..N -> Nat]
+           /\ \A p \in DOMAIN inHand : 
+                /\ Cardinality(inHand[p]) \leq 2
+                /\  CASE p = N -> inHand[p] \in SUBSET {N,1} 
+                    [] OTHER   -> inHand[p] \in SUBSET {p,p+1}
+
+THEOREM FairSpec => []TypeInvariant
 (* 
     DiningPhilosophers.cfg FILE :
         CONSTANTS N = 5

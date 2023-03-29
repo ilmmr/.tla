@@ -6,6 +6,7 @@
 (***************************************************************************)
 EXTENDS Integers, FiniteSets, TLC
 
+\* @type: Set(Str);
 CONSTANT INGREDIENTS
 (* INGREDIENTS == {"tobacco", "paper", "matches"} => put this on .cfg file *)
 (*  SMOKERS     == {"Juan", "Paulo", "Adrian"} 
@@ -14,6 +15,7 @@ CONSTANT INGREDIENTS
 *)
 
 (* The TABLE defines every possible combination of 2 ingredients on the table *)
+\* @type: Set(Str);
 TABLE       == {s \in SUBSET INGREDIENTS : Cardinality(s) = 2}
 
 (* While the dealer variable defines 1 of the sets of the TABLE 
@@ -22,11 +24,6 @@ TABLE       == {s \in SUBSET INGREDIENTS : Cardinality(s) = 2}
 *)
 VARIABLE   dealer, inHand, doneSmoking
 vars == << dealer, inHand, doneSmoking >>
-
-TypeOK ==  /\ dealer \in (TABLE \cup {})
-           /\ TABLE \subseteq (SUBSET INGREDIENTS)
-           /\ inHand \in [INGREDIENTS -> SUBSET INGREDIENTS]
-           /\ doneSmoking \subseteq INGREDIENTS
 
 Init == /\ LET t == CHOOSE t \in TABLE : TRUE IN dealer = t
         /\ inHand        = [i \in INGREDIENTS |-> {i}]
@@ -74,8 +71,13 @@ FairSpec  == Spec /\ WF_vars(Next)
     It checks wheter it can find a trace such:
         -> every smoker is done smoking.
 *)
-NotSolved == (doneSmoking # INGREDIENTS)
-
+NotSolved     == (doneSmoking # INGREDIENTS)
+TypeInvariant ==  
+                    /\ dealer \in (TABLE \cup {})
+                    /\ TABLE \subseteq (SUBSET INGREDIENTS)
+                    /\ inHand \in [INGREDIENTS -> SUBSET INGREDIENTS]
+                    /\ doneSmoking \subseteq INGREDIENTS
+THEOREM FairSpec => []TypeInvariant
 (* 
     CigaretteSmokers.cfg FILE :
         CONSTANT INGREDIENTS = {"tobacco", "paper", "matches"}

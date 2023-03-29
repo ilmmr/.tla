@@ -14,7 +14,7 @@
 
 LOCAL INSTANCE Naturals
 LOCAL INSTANCE FiniteSets
-Range(f) == { f[x] : x \in DOMAIN f }
+LOCAL INSTANCE Functions
 
 \* @type: Nat;
 CONSTANT NumberOfChairs

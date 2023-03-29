@@ -8,11 +8,7 @@ VARIABLES
   msgs       (* the set of messages interchaged *)
 
 vars    == << pState, mState, pPrepared, msgs >> 
-Message ==
-  (*************************************************************************)
-  (* The set of all possible messages.                                     *)
-  (*************************************************************************)
-  [type : {"Prepared"}, participant : Participant]  \cup  [type : {"Commit", "Abort"}]
+Message == [type : {"Prepared"}, participant : Participant]  \cup  [type : {"Commit", "Abort"}]
 
 -----------------------------------------------------------------------------
 (******************** ACTIONS FROM THE COMMIT MANAGER **********************)

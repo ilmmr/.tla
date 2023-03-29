@@ -3,12 +3,19 @@
 EXTENDS Naturals, FiniteSets, TLC
 
 (* As a constant we get the size of the border                             *)
+\* @type: Nat;
 CONSTANT N
+
 (* As a variable, we define which positions have occupied yet.             *)
 (* And the current position of the knight                                  *)
-VARIABLE occupied, current
+VARIABLE
+        \* @type: Set(Seq(Nat)); 
+        occupied, 
+        \* @type: Set(Nat);
+        current
 vars    == << occupied, current >>
 
+\* @type: Set(Nat);
 Possible == 0..N-1
 
 Inv    == /\ Cardinality(occupied) \leq N^2

@@ -1,6 +1,9 @@
 --------------------------- MODULE TransitionCommit -------------------------
+\* @type: Set(Nat);
 CONSTANT Participant
-VARIABLE pState (* the state of each participant *)
+VARIABLE
+        \* @type: Nat -> Str; 
+        pState
 -----------------------------------------------------------------------------
 Prepare(p)   == /\ pState[p] = "working"
                 /\ pState'   = [pState EXCEPT ![p] = "prepared"]

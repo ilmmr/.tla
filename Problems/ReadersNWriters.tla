@@ -6,11 +6,15 @@
 (**************************************************************************)
 EXTENDS FiniteSets, Naturals, Sequences, TLC
 
+\* @type: Nat;
 CONSTANT NumActors
 
 VARIABLES
+    \* @type: Set(Nat);
     readers, \* set of processes currently reading
+    \* @type: Set(Nat);
     writers, \* set of processes currently writing
+    \* @type: Seq(Nat);
     waiting  \* queue of processes waiting to access the resource
 vars == <<readers, writers, waiting>>
 
@@ -88,7 +92,7 @@ Spec == Init /\ [][Next]_vars /\ Fairness
 
 (* Invariants *)
 (* REMEMBER: All invariants are safety properties, but not all safety properties are invariants. *)
-TypeOK ==
+TypeInvariant ==
     /\ readers \subseteq Actors
     /\ writers \subseteq Actors
     /\ waiting \in Seq({"read", "write"} \times Actors)
@@ -102,6 +106,9 @@ Liveness ==
     /\ \A actor \in Actors : []<>(actor \in writers)
     /\ \A actor \in Actors : []<>(actor \notin readers)
     /\ \A actor \in Actors : []<>(actor \notin writers)
+
+THEOREM Spec => []TypeInvariant
+THEOREM Spec => []Safety
 (* 
     PUT this into the .cfg file:
     CONSTANTS NumActors = 2
