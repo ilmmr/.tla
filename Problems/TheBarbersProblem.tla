@@ -87,11 +87,16 @@ Customer            == \/ CustomerWakesBarber
                        \/ ChecksBarber
 
 --------------------------------------------------------------------------
-Next                == \/ Customer
-                       \/ Barber
-Init                == barber = FALSE /\ chairs = [n \in 1..NumberOfChairs |-> FALSE]
+Next                ==  \/ Customer
+                        \/ Barber
+
+Init                ==  /\ barber
+                        /\ chairs = [n \in 1..NumberOfChairs |-> FALSE]
                         /\ goingToSit = FALSE /\ goingToSleep = FALSE
-Spec                == Init /\ [][Next]_<<barber, chairs, goingToSit, goingToSleep>>
+
+Spec                ==  /\ Init 
+                        /\ [][Next]_<<barber, chairs, goingToSit, goingToSleep>>
+                        /\ WF_<<barber, chairs, goingToSit, goingToSleep>>(Next)
 
 TypeInvariant       == /\ chairs \in [1..NumberOfChairs -> BOOLEAN]
                        /\ barber \in BOOLEAN 
@@ -104,5 +109,6 @@ THEOREM Spec => []TypeInvariant
     TheBarbersProblem.cfg FILE :
         CONSTANT NumberOfChairs = 3
         SPECIFICATION Spec
+        INVARIANT TypeInvariant
 *)
 ==========================================================================
