@@ -26,11 +26,13 @@ Neighbours(cell) == LET x == cell[1]
                         
 Init    ==  status \in [POSGRID -> BOOLEAN]
 Next    ==  LET 
-                \* 
+                \* Any dead cell with three live neighbours becomes a live cell.
                 revive(cell)  == ~status[cell] /\ Neighbours(cell) = 3
-                \* 
+                \* Any live cell with two or three live neighbours survives.
                 survive(cell) ==  status[cell] /\ Neighbours(cell) \in {2, 3}
             IN  status' =   [ p \in POSGRID |-> CASE revive(p) \/ survive(p)    -> TRUE
+                                                \* All other live cells die in the next generation. 
+                                                \* Similarly, all other dead cells stay dead.
                                                 [] OTHER                        -> FALSE
                             ]
 
