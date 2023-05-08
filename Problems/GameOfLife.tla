@@ -6,17 +6,14 @@ EXTENDS TLC, FiniteSets, Naturals
 CONSTANT N
 ASSUME   N \in Nat \ {0}
 
-
 VARIABLE
         \* @type: Seq(Nat) -> Boolean;
         status
 
 \* @type: Set(Seq(Nat));
 POSGRID == {<< x, y >> : x, y \in 1..N}
-
 \* @type: f -> DOMAIN f^-1;
 CODOMAIN(func) == {func[p] : p \in DOMAIN func}
-
 \* @type: Set(Nat);
 RANGE == 1..N
 
@@ -35,4 +32,6 @@ Next    ==  LET revive(cell)  == ~status[cell] /\ Neighbours(cell) = 3
                             ]
 
 Spec    == Init /\ [][Next]_status
+
+\* It implictly checks for deadlock.
 ===============================================================
