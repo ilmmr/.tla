@@ -20,12 +20,15 @@ RANGE == 1..N
 \* @type: Seq(Nat) -> Nat;
 Neighbours(cell) == LET x == cell[1]
                         y == cell[2]
-                        S == (UNION {{<< x+pX, y+pY >>, << x-pX, x-pY>>} \ {<<x,y>>} : pX, pY \in {0, 1}}) \intersect (RANGE \X RANGE)
+                        S == (UNION {{<< x+pX, y+pY >>, << x-pX, x-pY >>} \ {<< x,y >>} : pX, pY \in {0, 1}}) \intersect (RANGE \X RANGE)
                     IN
                         Cardinality({c \in S : status[c] = TRUE})
                         
 Init    ==  status \in [POSGRID -> BOOLEAN]
-Next    ==  LET revive(cell)  == ~status[cell] /\ Neighbours(cell) = 3
+Next    ==  LET 
+                \* 
+                revive(cell)  == ~status[cell] /\ Neighbours(cell) = 3
+                \* 
                 survive(cell) ==  status[cell] /\ Neighbours(cell) \in {2, 3}
             IN  status' =   [ p \in POSGRID |-> CASE revive(p) \/ survive(p)    -> TRUE
                                                 [] OTHER                        -> FALSE
