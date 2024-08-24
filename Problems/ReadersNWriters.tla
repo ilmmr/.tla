@@ -2,6 +2,8 @@
 (**************************************************************************)
 (* A specification of the readers and writers problem, a common computing *)
 (* problem in concurrency.                                                *)
+(* Note: this example checks only for starvation of both readers and      *)
+(* writers.                                                               *)
 (* https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem          *)
 (**************************************************************************)
 EXTENDS FiniteSets, Naturals, Sequences, TLC
@@ -15,7 +17,7 @@ VARIABLES
     readers, \* set of processes currently reading
     \* @type: Set(Nat);
     writers, \* set of processes currently writing
-    \* @type: Seq(Nat);
+    \* @type: Seq(Str \X Int);
     waiting  \* queue of processes waiting to access the resource
 vars == <<readers, writers, waiting>>
 
