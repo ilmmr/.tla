@@ -22,27 +22,27 @@ VARIABLES
 vars == << counter, writers >>
 
 TypeInvariant ==
-    /\ writers \subseteq Actors
+    /\ writers \subseteq Writers
     /\ counter \in Nat
 
 ReadyToWrite(writer) ==
-    /\ writer \notin DOMAIN writers
+    /\ writer \notin writers
     /\ counter < 5
     /\ writers' = writers \cup {writer}
     /\ UNCHANGED counter
 
 Write(writer) ==
-    /\ writer \in DOMAIN writers
+    /\ writer \in writers
     /\ counter' = counter + 1
     /\ writers' = writers \ {writer}
 
 Init ==
     /\ writers  = {}
     /\ counter  = 0
-Next == \E writer \in Writers : ReadyToWrite(actor) \/ Write(actor)
+Next == \E writer \in Writers : ReadyToWrite(writer) \/ Write(writer)
 Spec == Init /\ [][Next]_vars
 
-CounterIsAlwaysBellow5 == [](counter < 5)
+CounterIsAlwaysBellow5 == [](counter <= 5)
 
 (* 
     PUT this into the .cfg file:
