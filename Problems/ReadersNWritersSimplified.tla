@@ -42,12 +42,16 @@ Init ==
 Next == \E writer \in Writers : ReadyToWrite(writer) \/ Write(writer)
 Spec == Init /\ [][Next]_vars
 
-CounterIsAlwaysBellow5 == [](counter <= 5)
+CounterIsAlwaysBellow5 == (counter <= 5)
+NoTwoWriters == \/ writers = {}  (* No writer is writing *)
+                \/ \E w \in writers: writers = {w}  (* At most one writer is writing *)
 
+THEOREM CounterBellow5Theorem   == Spec => []CounterIsAlwaysBellow5
+THEOREM NoTwoWritersTheorem     == Spec => []NoTwoWriters
 (* 
     PUT this into the .cfg file:
     CONSTANTS NumWriters = 2
     SPECIFICATION Spec
-    PROPERTIES CounterIsAlwaysBellow5
+    INVARIANTS CounterIsAlwaysBellow5 NoTwoWriters
 *)
 ============================================================================
